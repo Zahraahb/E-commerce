@@ -14,7 +14,12 @@ export const initApp = (app, express) => {
   app.use("/categories", routers.categoryRouter);
   app.use("/subCategories", routers.subCategoryRouter);
   app.use("/brands", routers.brandRouter);
-
+  app.use("/products", routers.productRouter);
+  app.use("/coupons", routers.couponRouter);
+  app.use("/cart", routers.cartRouter);
+  app.use("/orders", routers.orderRouter);
+  app.use("/reviews", routers.reviewRouter);
+  app.use("/wishList", routers.wishListRouter);
   
 
   app.get("/", (req, res) => res.send("Hello World!"));

@@ -6,7 +6,8 @@ import { validation } from "../../middleware/validation.js";
 import * as CC from "./category.controller.js";
 import * as CV from "./category.validation.js";
 import subCategoryRouter from "../subCategory/subCategory.routes.js";
-const router = Router();
+
+const router = Router({});
 
 router.use("/:categoryId/subCategories/", subCategoryRouter)
 

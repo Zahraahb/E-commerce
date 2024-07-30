@@ -14,7 +14,7 @@ import subCategoryModel from "../../../db/models/subCategory.model.js";
 //==============================addSubCategory===================================
 export const addSubCategory = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
-  console.log(req.params);
+  
    const categoryExist = await categoryModel.findById(req.params.categoryId);
    if(!categoryExist){
     return next(new AppError("category not exist!", 409));
