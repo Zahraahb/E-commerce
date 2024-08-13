@@ -1,9 +1,7 @@
-
 import productModel from "../../../db/models/product.model.js";
-import wishlistModel from "../../../db/models/wishList.model.js";
+import wishlistModel from "../../../db/models/wishlist.model.js";
 import { AppError } from "../../../utils/classError.js";
 import { asyncHandler } from "../../../utils/globalErrorHandler.js";
-
 
 //==============================addProductToWishList===================================
 export const addToWishList = asyncHandler(async (req, res, next) => {
@@ -22,7 +20,10 @@ export const addToWishList = asyncHandler(async (req, res, next) => {
     });
     return res
       .status(200)
-      .json({ msg: "Product added to wishlist successfully", wishList: newWishList });
+      .json({
+        msg: "Product added to wishlist successfully",
+        wishList: newWishList,
+      });
   }
 
   const wishList = await wishlistModel.findOneAndUpdate(
@@ -55,7 +56,9 @@ export const removeFromWishList = asyncHandler(async (req, res, next) => {
     return next(new AppError("Product not found in wishlist!", 404));
   }
 
-  return res.status(200).json({ msg: "Product removed from wishlist successfully", wishList });
+  return res
+    .status(200)
+    .json({ msg: "Product removed from wishlist successfully", wishList });
 });
 
 //============================get user wishlist========================================
@@ -67,8 +70,6 @@ export const getUserWishList = asyncHandler(async (req, res, next) => {
   if (!wishList) {
     return next(new AppError("Wishlist not found!", 404));
   }
-
-  
 
   return res.status(200).json({ msg: "done", wishList });
 });
