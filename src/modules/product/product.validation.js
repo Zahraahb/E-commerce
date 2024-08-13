@@ -10,7 +10,6 @@ export const createProduct = {
       price: joi.number().min(1).required(),
       discount: joi.number().min(0).max(100),
       stock: joi.number().min(0).required(),
-      rateAvg: joi.number().min(0).max(5),
       brand: joi.string().custom(objectIdValidation).required(),
       subCategory: joi.string().custom(objectIdValidation).required(),
       category: joi.string().custom(objectIdValidation).required(),
@@ -25,10 +24,22 @@ export const createProduct = {
 
 export const updateProduct = {
   body: joi.object({
-    name: joi.string().min(3).max(30),
-    category: joi.string().custom(objectIdValidation),
+    title: joi.string().min(3).max(30),
+    description: joi.string(),
+    price: joi.number().min(1),
+    discount: joi.number().min(0).max(100),
+    stock: joi.number().min(0),
+    brand: joi.string().custom(objectIdValidation).required(),
+    subCategory: joi.string().custom(objectIdValidation).required(),
+    category: joi.string().custom(objectIdValidation).required(),
   }),
-  file: generalFieldes.file,
+  files: joi.object({
+    image: joi.array().items(generalFieldes.file.required()),
+    coverImages: joi.array().items(generalFieldes.file),
+  }),
+  params: joi.object({
+    id: joi.string().custom(objectIdValidation).required(),
+  }),
   headers: generalFieldes.headers.required(),
 };
 
@@ -43,4 +54,5 @@ export const specificProduct = {
    params: joi.object({
      id: joi.string().custom(objectIdValidation).required(),
    }),
+   headers: generalFieldes.headers.required(),
  };

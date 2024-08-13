@@ -25,10 +25,10 @@ export const addCategory = asyncHandler(async (req, res, next) => {
  
 
   const customId = nanoid(5)
-
   const {secure_url, public_id} = await cloudinary.uploader.upload(req.file.path, {
     folder:`Ecommerce/categories/${customId}`,
   })
+  req.filePath = `Ecommerce/categories/${customId}`
 
   const category = await categoryModel.create({
     name,
@@ -43,6 +43,11 @@ export const addCategory = asyncHandler(async (req, res, next) => {
     customId,
     createdBy: req.user._id,
   });
+
+  req.data = {
+    model: categoryModel,
+    id: category._id
+  }
   return res.status(200).json({msg:"done",category})
 
 });

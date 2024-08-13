@@ -19,5 +19,11 @@ router.patch(
   auth([systemRoles.ADMIN]),
   CC.updateCoupon
 );
+router.get("/", CC.getAllCoupons);
+router.delete(
+  "/:id",validation(CV.deleteCoupon),
+  auth([systemRoles.ADMIN]),
+  CC.deleteCoupon
+);
 
 export default router;

@@ -83,3 +83,13 @@ export const clearCart = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ msg: "done" });
 });
+
+//==============================getCart===================================
+export const getCart = asyncHandler(async (req, res, next) => {
+  const cart = await cartModel.findOne({ user: req.user.id }).populate("products.productId");
+
+  if(!cart){
+    return next(new AppError("Cart is empty!", 409));  
+  }
+  return res.status(200).json({ msg: "done", cart });
+});

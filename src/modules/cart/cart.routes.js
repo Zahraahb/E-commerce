@@ -26,4 +26,10 @@ router.put(
   auth(Object.values(systemRoles)),
   CC.clearCart
 );
+router.get(
+  "/",
+  validation(CV.clearCart),
+  auth(Object.values(systemRoles)),
+  CC.getCart
+);
 export default router;

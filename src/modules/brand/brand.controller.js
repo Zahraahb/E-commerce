@@ -1,7 +1,6 @@
 import userModel from "../../../db/models/user.model.js";
 import { AppError } from "../../../utils/classError.js";
 import { asyncHandler } from "../../../utils/globalErrorHandler.js";
-
 import { sendEmail } from "../../service/sendEmail.js";
 import { customAlphabet, nanoid } from "nanoid";
 import categoryModel from "../../../db/models/category.model.js";
@@ -12,23 +11,25 @@ import subCategoryModel from "../../../db/models/subCategory.model.js";
 
 //==============================addbrand===================================
 export const addbrand = asyncHandler(async (req, res, next) => {
-  const { name} = req.body;
+  const { name } = req.body;
   const brandExist = await brandModel.findOne({ name: name.toLowerCase() });
- if(brandExist){
-   return next(new AppError("brand already exists!", 409));
- 
- }
- 
-  if(!req.file){
+  if (brandExist) {
+    return next(new AppError("brand already exists!", 409));
+  }
+
+  if (!req.file) {
     return next(new AppError("image is required", 409));
   }
- 
 
-  const customId = nanoid(5)
+  const customId = nanoid(5);
 
-  const {secure_url, public_id} = await cloudinary.uploader.upload(req.file.path, {
-    folder:`Ecommerce/brands/${customId}`,
-  })
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.file.path,
+    {
+      folder: `Ecommerce/brands/${customId}`,
+    }
+  );
+  req.filePath = `Ecommerce/brands/${customId}`;
 
   const brand = await brandModel.create({
     name,
@@ -41,58 +42,57 @@ export const addbrand = asyncHandler(async (req, res, next) => {
       public_id,
     },
     customId,
-    
+
     createdBy: req.user._id,
   });
+  req.data = {
+    model: brandModel,
+    id: brand._id,
+  };
 
- 
-  return res.status(200).json({msg:"done", brand})
-
+  return res.status(200).json({ msg: "done", brand });
 });
-
 
 //==============================updateBrand===================================
 export const updateBrand = asyncHandler(async (req, res, next) => {
-  const { name} = req.body;
+  const { name } = req.body;
   const { id } = req.params;
 
-  const brand = await brandModel.findOne({_id:id, createdBy: req.user._id});
-  if(!brand) { 
-    return next(new AppError("brand not exist!", 409));}
+  const brand = await brandModel.findOne({ _id: id, createdBy: req.user._id });
+  if (!brand) {
+    return next(new AppError("brand not exist!", 409));
+  }
 
-  if(name){
-    if(brand.name == name.toLowerCase()){
+  if (name) {
+    if (brand.name == name.toLowerCase()) {
       return next(new AppError("name cannot be same", 409));
     }
 
-    if(await brandModel.findOne({name:name.toLowerCase()})){
+    if (await brandModel.findOne({ name: name.toLowerCase() })) {
       return next(new AppError("brand already exists!", 409));
     }
-    brand.name = name.toLowerCase()
-    brand.slug = slugify(name,{
-      replacement:"_",
+    brand.name = name.toLowerCase();
+    brand.slug = slugify(name, {
+      replacement: "_",
       lower: true,
     });
-    
   }
-  if(req.file){
-    await cloudinary.uploader.destroy(brand.image.public_id)
-     const { secure_url, public_id } = await cloudinary.uploader.upload(
-       req.file.path,
-       {
-         folder: `Ecommerce/brands/${brand.customId}`,
-       }
-     );
-     brand.image = { secure_url, public_id };
-
+  if (req.file) {
+    await cloudinary.uploader.destroy(brand.image.public_id);
+    const { secure_url, public_id } = await cloudinary.uploader.upload(
+      req.file.path,
+      {
+        folder: `Ecommerce/brands/${brand.customId}`,
+      }
+    );
+    brand.image = { secure_url, public_id };
   }
-  if(!name && !req.file){
+  if (!name && !req.file) {
     return next(new AppError("nothing to update!", 409));
   }
 
   await brand.save();
-  return res.status(200).json({msg:"done", brand})
-
+  return res.status(200).json({ msg: "done", brand });
 });
 
 //============================getBrands=================================
@@ -108,19 +108,21 @@ export const getBrands = asyncHandler(async (req, res, next) => {
 export const getBrand = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const brand = await brandModel
-   .findById(id)
-   .select("-createdBy -customId -createdAt -updatedAt ");
+    .findById(id)
+    .select("-createdBy -customId -createdAt -updatedAt ");
   if (!brand) {
     return next(new AppError("brand not found!", 404));
   }
   res.status(200).json({ msg: "done", brand });
 });
 
-
 //============================deleteBrand=================================
 export const deleteBrand = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const brand = await brandModel.findOneAndDelete({ _id: id, createdBy:req.user._id });
+  const brand = await brandModel.findOneAndDelete({
+    _id: id,
+    createdBy: req.user._id,
+  });
   if (!brand) {
     return next(
       new AppError("brand not found or you have no permission!", 404)
@@ -138,4 +140,3 @@ export const deleteBrand = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ msg: "brand deleted successfully" });
 });
-

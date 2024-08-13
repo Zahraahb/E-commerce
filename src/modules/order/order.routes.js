@@ -17,7 +17,15 @@ router.patch(
   "/cancel-order/:id",
   validation(OV.cancelOrder),
   auth(Object.values(systemRoles)),
-  OC.cancelOrder)
+  OC.cancelOrder
+);
 
+router.get(
+  "/",
+  validation(OV.getUserOrders),
+  auth(Object.values(systemRoles)),
+  OC.getUserOrders
+);
+router.get("/success/:orderId", OC.successPayment);
 
 export default router;

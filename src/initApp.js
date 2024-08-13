@@ -1,14 +1,18 @@
 import connectionDB from "../db/connectionDB.js";
 import * as routers from "../src/modules/index.routes.js";
-
 import { AppError } from "../utils/classError.js";
+import { deleteFromCloudinary } from "../utils/deleteFromCloudinary.js";
+import { deleteFromDB } from "../utils/deleteFromDB.js";
 import { globalErrorHandling } from "../utils/globalErrorHandler.js";
+import cors from "cors"
 
 export const initApp = (app, express) => {
-  const port = 3000;
+  
+  app.use(cors());
 
-  connectionDB();
+  
   app.use(express.json());
+  connectionDB();
 
   app.use("/users", routers.userRouter);
   app.use("/categories", routers.categoryRouter);
@@ -19,7 +23,7 @@ export const initApp = (app, express) => {
   app.use("/cart", routers.cartRouter);
   app.use("/orders", routers.orderRouter);
   app.use("/reviews", routers.reviewRouter);
-  app.use("/wishList", routers.wishListRouter);
+  app.use("/wishlist", routers.wishListRouter);
   
 
   app.get("/", (req, res) => res.send("Hello World!"));
@@ -29,6 +33,6 @@ export const initApp = (app, express) => {
   });
 
   //global error handling middleware
-  app.use(globalErrorHandling);
-  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+  app.use(globalErrorHandling, deleteFromCloudinary, deleteFromDB);
+  
 };

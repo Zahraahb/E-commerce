@@ -21,5 +21,6 @@ router.patch(
   auth(Object.values(systemRoles)),
   WC.removeFromWishList
 );
+router.get("/",validation(WV.getWishList),auth(),WC.getUserWishList)
 
 export default router;

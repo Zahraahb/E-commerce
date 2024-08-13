@@ -8,5 +8,8 @@ export const addToWishList = {
   }),
   headers: generalFieldes.headers.required(),
 };
-
+export const getWishList = {
+  
+  headers: generalFieldes.headers.required(),
+};
 

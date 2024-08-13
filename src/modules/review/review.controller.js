@@ -54,3 +54,20 @@ export const addReview = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({ msg: "done", review });
 });
+
+//==============================getProductReviews===================================
+export const getReviews = asyncHandler(async (req, res, next) => {
+  const { productId } = req.params;
+  const product = await productModel.findById(productId)
+
+  if(!product) {
+    return next(new AppError("Product not exist!", 404));
+  }
+
+  const reviews = await reviewModel
+   .find({ productId })
+   .populate("createdBy", "name")
+   .sort({ createdAt: -1 });
+
+  return res.status(200).json({ msg: "done", reviews });
+});

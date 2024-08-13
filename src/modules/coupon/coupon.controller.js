@@ -22,6 +22,11 @@ export const addCoupon = asyncHandler(async (req, res, next) => {
     toDate,
     createdBy: req.user._id,
   });
+  req.data = {
+    model: couponModel,
+    id: coupon._id,
+  };
+
 
  
   return res.status(200).json({msg:"done",  coupon})
@@ -55,6 +60,29 @@ export const updateCoupon = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({msg:"done",  coupon})
 
+});
+//===============================getAllCoupon==========================
+export const getAllCoupons = asyncHandler(async (req, res, next) => {
+  const coupons = await couponModel
+    .find()
+    .select("code amount fromDate toDate");
+   
+
+  return res.status(200).json({ msg: "done", coupons });
+});
+
+//==============================deleteCoupon========================
+export const deleteCoupon = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const coupon = await couponModel.findOneAndDelete({
+    _id: id,
+    createdBy: req.user._id,
+  });
+  if (!coupon) {
+    return next(new AppError("coupon not found or you are not authorized!", 409));
+  }
+
+  return res.status(200).json({ msg: "done" });
 });
 
 

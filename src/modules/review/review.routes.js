@@ -8,6 +8,6 @@ import * as RV from "./review.validation.js";
 const router = Router({ mergeParams: true });
 
 router.post("/", validation(RV.addReview), auth(), RC.addReview);
-
+router.get("/:productId", validation(RV.getReviews), RC.getReviews);
 
 export default router;

@@ -27,11 +27,6 @@ export const updateCoupon = {
   }),
 };
 
-export const specificCoupon = {
-  params: joi.object({
-    id: joi.string().custom(objectIdValidation).required(),
-  }),
-};
 
 export const deleteCoupon = {
   params: joi.object({

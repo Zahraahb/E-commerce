@@ -14,20 +14,17 @@ import subCategoryModel from "../../../db/models/subCategory.model.js";
 //==============================addSubCategory===================================
 export const addSubCategory = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
-  
-   const categoryExist = await categoryModel.findById(req.params.categoryId);
-   if(!categoryExist){
-    return next(new AppError("category not exist!", 409));
-   }
 
+  const categoryExist = await categoryModel.findById(req.params.categoryId);
+  if (!categoryExist) {
+    return next(new AppError("category not exist!", 409));
+  }
 
   const subCategoryExist = await subCategoryModel.findOne({
     name: name.toLowerCase(),
   });
   subCategoryExist && next(new AppError("subCategory already exists!", 409));
 
-
- 
   if (!req.file) {
     return next(new AppError("image is required", 409));
   }
@@ -40,6 +37,7 @@ export const addSubCategory = asyncHandler(async (req, res, next) => {
       folder: `Ecommerce/categories/${categoryExist.customId}/subCategories/${customId}`,
     }
   );
+  req.filePath = `Ecommerce/categories/${categoryExist.customId}/subCategories/${customId}`;
 
   const subCategory = await subCategoryModel.create({
     name,
@@ -55,12 +53,17 @@ export const addSubCategory = asyncHandler(async (req, res, next) => {
     category: req.params.categoryId,
     createdBy: req.user._id,
   });
+
+  req.data = {
+    model: subCategoryModel,
+    id: subCategory._id,
+  };
   return res.status(200).json({ msg: "done", subCategory });
 });
 
 //==============================updateSubCategory===================================
 export const updateSubCategory = asyncHandler(async (req, res, next) => {
-  const { name,category } = req.body;
+  const { name, category } = req.body;
   const { id } = req.params;
 
   const subCategory = await subCategoryModel.findOne({
@@ -70,7 +73,7 @@ export const updateSubCategory = asyncHandler(async (req, res, next) => {
   if (!subCategory) {
     return next(new AppError("subCategory not exist!", 409));
   }
-  const categoryOfSub = await categoryModel.findById(subCategory.category)
+  const categoryOfSub = await categoryModel.findById(subCategory.category);
 
   if (name) {
     if (subCategory.name == name.toLowerCase()) {
@@ -87,10 +90,9 @@ export const updateSubCategory = asyncHandler(async (req, res, next) => {
     });
   }
 
-  if(category){
-    if(!await categoryModel.findById(category)){
-        return next(new AppError("category not exist!", 409));
-        
+  if (category) {
+    if (!(await categoryModel.findById(category))) {
+      return next(new AppError("category not exist!", 409));
     }
     subCategory.category = category;
   }
@@ -112,14 +114,20 @@ export const updateSubCategory = asyncHandler(async (req, res, next) => {
 
 //==========================getAllSubCategories========================
 export const getAllSubCategories = asyncHandler(async (req, res, next) => {
-  const subcategories = await subCategoryModel.find({}).select('name slug image category').populate("category", "name slug image");
+  const subcategories = await subCategoryModel
+    .find({})
+    .select("name slug image category")
+    .populate("category", "name slug image");
 
   return res.status(200).json({ msg: "done", subcategories });
 });
 //=========================getSpecificSubCategory========================
 export const getSubCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const subCategory = await subCategoryModel.findById(id).select('name slug image category').populate("category", "name slug image");
+  const subCategory = await subCategoryModel
+    .findById(id)
+    .select("name slug image category")
+    .populate("category", "name slug image");
 
   if (!subCategory) {
     return next(new AppError("subCategory not found!", 404));

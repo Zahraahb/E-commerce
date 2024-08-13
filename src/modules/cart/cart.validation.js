@@ -25,19 +25,7 @@ export const updateCart = {
   }),
 };
 
-export const specificCoupon = {
-  params: joi.object({
-    id: joi.string().custom(objectIdValidation).required(),
-  }),
 
-};
-
-export const deleteProductCart = {
-  body: joi.object({
-    productId: joi.string().custom(objectIdValidation).required(),
-  }),
-  headers: generalFieldes.headers.required(),
-};
 
 export const clearCart = {
   headers: generalFieldes.headers.required(),

@@ -1,11 +1,10 @@
-import userModel from "../../../db/models/user.model.js";
+
 import { AppError } from "../../../utils/classError.js";
 import { asyncHandler } from "../../../utils/globalErrorHandler.js";
 import wishListModel from "../../../db/models/wishList.model.js";
 import productModel from "../../../db/models/product.model.js";
 
 //==============================addProductToWishList===================================
-
 export const addToWishList = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
 
@@ -40,7 +39,6 @@ export const addToWishList = asyncHandler(async (req, res, next) => {
 });
 
 //============================remove product from wishlist==========================
-
 export const removeFromWishList = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
 
@@ -57,4 +55,17 @@ export const removeFromWishList = asyncHandler(async (req, res, next) => {
   }
 
   return res.status(200).json({ msg: "Product removed from wishlist successfully", wishList });
+});
+
+//============================get user wishlist========================================
+export const getUserWishList = asyncHandler(async (req, res, next) => {
+  const wishList = await wishListModel.findOne({ user: req.user.id }).populate( "products");
+
+  if (!wishList) {
+    return next(new AppError("Wishlist not found!", 404));
+  }
+
+  
+
+  return res.status(200).json({ msg: "done", wishList });
 });

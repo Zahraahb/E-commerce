@@ -35,6 +35,7 @@ const orderSchema = new Schema(
         "placed",
         "pending",
         "waitPayment",
+        "paid",
         "processing",
         "shipped",
         "delivered",

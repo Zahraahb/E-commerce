@@ -24,6 +24,17 @@ router.post(
 );
 
 router.get("/", PC.getProducts)
+router.patch(
+  "/update/:id",
+  multerHost(vaildExtentions.image).fields([
+    { name: "image", maxCount: 1 },
+    { name: "coverImages", maxCount: 3 },
+  ]),
+  validation(PV.updateProduct),
+  auth([systemRoles.ADMIN]),
+  PC.updateProduct
+);
 
-
+router.delete("/:id",validation(PV.deleteProduct), auth([systemRoles.ADMIN]),PC.deleteProduct )
+router.get("/:id", validation(PV.specificProduct), PC.getProduct);
 export default router;

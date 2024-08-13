@@ -43,3 +43,7 @@ export const cancelOrder = {
   }),
   headers: generalFieldes.headers.required(),
 };
+
+export const getUserOrders = {
+  headers: generalFieldes.headers.required(),
+};
