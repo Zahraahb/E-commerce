@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const wishListSchema = new Schema(
+const wishlistSchema = new Schema(
   {
    
     user: {
@@ -20,5 +20,5 @@ const wishListSchema = new Schema(
     versionKey: false,
   }
 );
-const wishListModel = model( "wishList", wishListSchema);
-export default wishListModel;
+const wishlistModel = model( "wishList", wishlistSchema);
+export default wishlistModel;
