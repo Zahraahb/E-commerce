@@ -26,7 +26,7 @@ export const initApp = (app, express) => {
   app.use("/wishlist", routers.wishListRouter);
   
 
-  app.get("/", (req, res) => res.send("Hello World!"));
+  app.get("/", (req, res) => res.status(200).json({msg:"welcome on my project!"}));
 
   app.use("*", (req, res, next) => {
     return next(new AppError(`invalid url ${req.originalUrl}`, 404));
