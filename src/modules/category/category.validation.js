@@ -8,7 +8,7 @@ export const createCategory = {
         
     }).required(),
     file:generalFieldes.file.required(),
-    headers:generalFieldes.headers.required(),
+    // headers:generalFieldes.headers.required(),
 }
 
 export const updateCategory = {
