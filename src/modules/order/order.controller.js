@@ -10,7 +10,6 @@ import { sendEmail } from "../../service/sendEmail.js";
 import { payment } from "../../../utils/payment.js";
 import Stripe from "stripe";
 
-
 //==============================createOrder===================================
 export const createOrder = asyncHandler(async (req, res, next) => {
   const { productId, quantity, couponCode, address, phone, paymentMethod } =
@@ -117,27 +116,29 @@ export const createOrder = asyncHandler(async (req, res, next) => {
     date: order.createdAt,
     coupon: req.body?.coupon?.amount || 0,
   };
- 
+
   await createInvoice(invoice, "invoice.pdf");
 
   await sendEmail(
     req.user.email,
     "order placed",
     "your order has been placed successfully",
-    [{
-      path:"invoice.pdf",
-      contentType:"application/pdf"
-    }]
+    [
+      {
+        path: "invoice.pdf",
+        contentType: "application/pdf",
+      },
+    ]
   );
 
-  if (paymentMethod == "card"){
-    const stripe  = new Stripe(process.env.stripe_secret)
-    if (req.body?.coupon){
+  if (paymentMethod == "card") {
+    const stripe = new Stripe(process.env.stripe_secret);
+    if (req.body?.coupon) {
       const coupon = await stripe.coupons.create({
         percent_off: req.body?.coupon.amount,
-        duration: "once"
-      })
-      req.body.couponId = coupon.id
+        duration: "once",
+      });
+      req.body.couponId = coupon.id;
     }
 
     const session = await payment({
@@ -160,15 +161,41 @@ export const createOrder = asyncHandler(async (req, res, next) => {
           quantity: product.quantity,
         };
       }),
-      discounts: req.body?.couponCode
-        ? [{ coupon: req.body.couponId }]
-        : [],
+      discounts: req.body?.couponCode ? [{ coupon: req.body.couponId }] : [],
     });
 
-    return res.status(200).json({ msg: "done", url: session.url});
-
+    return res.status(200).json({ msg: "done", url: session.url });
   }
   return res.status(200).json({ msg: "done", order });
+});
+//=======================webhook===========================
+
+export const webhook = asyncHandler(async (req, res, next) => {
+  const stripe = new Stripe(process.env.stripe_secret);
+  const sig = req.headers["stripe-signature"];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.endpointSecret
+    );
+  } catch (err) {
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  // Handle the event
+   const { orderId } = event.data.object.metadata;
+  if (event.type != "checkout.session.completed") {
+    await orderModel.findOneAndUpdate({ _id: orderId }, {status:"rejected"});
+    return res.status(400).json({msg:"Payment failed"});
+    
+  }
+  await orderModel.findOneAndUpdate({ _id: orderId }, { status: "placed" });
+  return res.status(200).json({ msg: "done" });
 });
 //=======================successfulPayment=========================
 
@@ -187,9 +214,8 @@ export const successPayment = asyncHandler(async (req, res, next) => {
     return next(new AppError("Order not exist!", 409));
   }
 
-  
-    return res.status(200).json({ msg: "Payment successful"});
-  })
+  return res.status(200).json({ msg: "Payment successful" });
+});
 
 //==============================cancelOrder============================
 

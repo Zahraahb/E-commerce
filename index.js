@@ -9,6 +9,6 @@ const port = process.env.PORT || 3001 ;
 
 // app.set("case sensitive routing", true);
 initApp(app, express);
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`server is running on port ${port}!`));
 
 

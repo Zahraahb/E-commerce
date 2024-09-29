@@ -11,7 +11,14 @@ export const initApp = (app, express) => {
   app.use(cors());
 
   
-  app.use(express.json());
+  app.use((req, res, next) => {
+    if (req.originalUrl == "/orders/webhook"){
+      next()
+    } else{
+      express.json()(req, res, next)
+    }
+
+  });
   connectionDB();
 
   app.use("/users", routers.userRouter);
