@@ -32,7 +32,9 @@ export const generalFieldes = {
     "x-vercel-proxied-for": joi.string(),
     "x-vercel-ja4-digest": joi.string(),
     "x-vercel-proxy-signature-ts": joi.string(),
-    "postman-token": joi.string()
+    "access-control-allow-headers": joi.string(),
+    "access-control-allow-methods": joi.string(),
+    "postman-token": joi.string(),
   }),
   file: joi.object({
     size: joi.number().positive().required(),
