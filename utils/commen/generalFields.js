@@ -31,7 +31,6 @@ export const generalFieldes = {
     "access-control-allow-origin": joi.string(),
     "x-vercel-proxied-for": joi.string(),
     "x-vercel-ja4-digest": joi.string(),
-    "value": joi.string(),
     "x-vercel-proxy-signature-ts": joi.string(),
     "postman-token": joi.string()
   }),
