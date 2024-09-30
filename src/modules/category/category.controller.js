@@ -48,6 +48,7 @@ export const addCategory = asyncHandler(async (req, res, next) => {
     model: categoryModel,
     id: category._id
   }
+  console.log(req.body, req.file, req.headers);
   return res.status(200).json({msg:"done",category})
 
 });
