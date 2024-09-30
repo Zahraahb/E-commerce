@@ -17,7 +17,7 @@ export const validation = (schema) => {
       }
     });
     if (errors.length) {
-      console.log(req.headers);
+     
       return res.status(409).json({ msg: "validation error", errors });
     }
     next();
