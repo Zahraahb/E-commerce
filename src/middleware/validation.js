@@ -2,7 +2,7 @@ const dataMethods = ["body", "query", "headers", "file", "files"];
 
 export const validation = (schema) => {
   return (req, res, next) => {
-    console.log(req.body, req.file, req.headers);
+    
     let errors = [];
     dataMethods.forEach((key) => {
       if (schema[key]) {
@@ -17,6 +17,7 @@ export const validation = (schema) => {
       }
     });
     if (errors.length) {
+      console.log(req.headers);
       return res.status(409).json({ msg: "validation error", errors });
     }
     next();
