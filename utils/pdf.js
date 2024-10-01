@@ -1,10 +1,5 @@
 import fs from "fs";
 import PDFDocument from "pdfkit";
-import * as path from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const logo = fs.readFileSync(path.join(__dirname, "../logo.png"), "utf8");
 
 export async function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
@@ -20,7 +15,7 @@ export async function createInvoice(invoice, path) {
 
 function generateHeader(doc) {
   doc
-    .image(logo, 50, 45, { width: 50 })
+    .image("logo.png", 50, 45, { width: 50 })
     .fillColor("#444444")
     .fontSize(20)
     .text("Ecommerce", 110, 57)
