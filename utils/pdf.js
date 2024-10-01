@@ -15,7 +15,12 @@ export async function createInvoice(invoice, path) {
 
 function generateHeader(doc) {
   doc
-    .image("public/logo.png", 50, 45, { width: 50 })
+    .image(
+      "https://drive.google.com/drive/my-drive?dmr=1&ec=wgc-drive-globalnav-goto",
+      50,
+      45,
+      { width: 50 }
+    )
     .fillColor("#444444")
     .fontSize(20)
     .text("Ecommerce", 110, 57)

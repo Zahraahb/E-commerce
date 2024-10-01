@@ -9,7 +9,7 @@ import cors from "cors"
 export const initApp = (app, express) => {
   
   app.use(cors());
-  app.use(express.static("public"));
+
 
   
   app.use((req, res, next) => {
