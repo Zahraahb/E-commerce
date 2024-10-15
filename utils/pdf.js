@@ -1,5 +1,6 @@
 import fs from "fs";
 import PDFDocument from "pdfkit";
+import path from "path";
 
 export async function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
@@ -14,8 +15,9 @@ export async function createInvoice(invoice, path) {
 }
 
 function generateHeader(doc) {
+  const logoPath = path.join(__dirname, "logo.png"); // Absolute path
   doc
-    .image("logo.png", 50, 45, { width: 50 })
+    .image(logoPath, 50, 45, { width: 50 })
     .fillColor("#444444")
     .fontSize(20)
     .text("Ecommerce", 110, 57)
