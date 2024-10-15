@@ -1,7 +1,7 @@
 import fs from "fs";
 import PDFDocument from "pdfkit";
-import path from "path";
-import { fileURLToPath } from "url";
+
+import cloudinary from "./cloudinary";
 
 export async function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
@@ -15,19 +15,19 @@ export async function createInvoice(invoice, path) {
   doc.pipe(fs.createWriteStream(path));
 }
 
-function generateHeader(doc) {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const logoPath = path.join(__dirname, "../logo.png"); // Absolute path
-  doc
-    .image(logoPath, 50, 45, { width: 50 })
-    .fillColor("#444444")
-    .fontSize(20)
-    .text("Ecommerce", 110, 57)
-    .fontSize(10)
-    .text("Ecommerce", 200, 50, { align: "right" })
-    .text("123 Main Street", 200, 65, { align: "right" })
-    .text("Alexandria, ALEX, 10025", 200, 80, { align: "right" })
-    .moveDown();
+ function generateHeader(doc) {
+ 
+  const logoUrl =
+    "https://res.cloudinary.com/dzttwchi3/image/upload/v1728952852/logo_fmebod.png"
+      .image(logoUrl, 50, 45, { width: 50 })
+      .fillColor("#444444")
+      .fontSize(20)
+      .text("Ecommerce", 110, 57)
+      .fontSize(10)
+      .text("Ecommerce", 200, 50, { align: "right" })
+      .text("123 Main Street", 200, 65, { align: "right" })
+      .text("Alexandria, ALEX, 10025", 200, 80, { align: "right" })
+      .moveDown();
 }
 
 function generateCustomerInformation(doc, invoice) {
