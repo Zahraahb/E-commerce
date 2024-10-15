@@ -1,6 +1,7 @@
 import fs from "fs";
 import PDFDocument from "pdfkit";
 import path from "path";
+import { fileURLToPath } from "url";
 
 export async function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
