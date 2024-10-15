@@ -17,7 +17,7 @@ export async function createInvoice(invoice, path) {
 
 function generateHeader(doc) {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const logoPath = path.join(__dirname, "logo.png"); // Absolute path
+  const logoPath = path.join(__dirname, "../logo.png"); // Absolute path
   doc
     .image(logoPath, 50, 45, { width: 50 })
     .fillColor("#444444")
